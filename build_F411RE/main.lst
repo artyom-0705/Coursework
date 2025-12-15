@@ -1,4 +1,4 @@
-ARM GAS  C:\Users\parni\AppData\Local\Temp\ccyGICRR.s 			page 1
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -27,33 +27,124 @@ ARM GAS  C:\Users\parni\AppData\Local\Temp\ccyGICRR.s 			page 1
   24              		.thumb
   25              		.thumb_func
   27              	main:
-  28              	.LFB0:
-   1:Core/Src/main.c **** void main(void){
-  29              		.loc 1 1 16 view -0
+  28              	.LFB130:
+   1:Core/Src/main.c **** 
+   2:Core/Src/main.c **** #include "init.h"  // Подключаем заголовочный файл с объявлени�
+   3:Core/Src/main.c **** 
+   4:Core/Src/main.c **** uint8_t pwm_state_pa8 = 0;
+   5:Core/Src/main.c **** uint8_t pwm_state_pa9 = 0;
+   6:Core/Src/main.c **** 
+   7:Core/Src/main.c **** void main(void)
+   8:Core/Src/main.c **** {
+  29              		.loc 1 8 1 view -0
   30              		.cfi_startproc
   31              		@ Volatile: function does not return.
   32              		@ args = 0, pretend = 0, frame = 0
   33              		@ frame_needed = 0, uses_anonymous_args = 0
-  34              		@ link register save eliminated.
-  35              	.L2:
-   2:Core/Src/main.c ****     while(1){
-  36              		.loc 1 2 5 view .LVU1
-   3:Core/Src/main.c **** 
-   4:Core/Src/main.c ****     }
-  37              		.loc 1 4 5 view .LVU2
-   2:Core/Src/main.c ****     while(1){
-  38              		.loc 1 2 10 view .LVU3
-  39 0000 FEE7     		b	.L2
-  40              		.cfi_endproc
-  41              	.LFE0:
-  43              		.text
-  44              	.Letext0:
-ARM GAS  C:\Users\parni\AppData\Local\Temp\ccyGICRR.s 			page 2
+  34 0000 08B5     		push	{r3, lr}
+  35              	.LCFI0:
+  36              		.cfi_def_cfa_offset 8
+  37              		.cfi_offset 3, -8
+  38              		.cfi_offset 14, -4
+   9:Core/Src/main.c ****     // Инициализируем тактирование системы (RCC)
+  10:Core/Src/main.c ****     RCC_Init();            // Настраивает тактовую частоту 96 МГц
+  39              		.loc 1 10 5 view .LVU1
+  40 0002 FFF7FEFF 		bl	RCC_Init
+  41              	.LVL0:
+  11:Core/Src/main.c ****     
+  12:Core/Src/main.c ****     // Инициализируем SysTick (опционально, для задержек)
+  13:Core/Src/main.c ****     SysTick_Init();        // Настраивает системный таймер на 1 кГц
+  42              		.loc 1 13 5 view .LVU2
+  43 0006 FFF7FEFF 		bl	SysTick_Init
+  44              	.LVL1:
+  14:Core/Src/main.c ****     
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s 			page 2
+
+
+  15:Core/Src/main.c ****     // Инициализируем ШИМ
+  16:Core/Src/main.c ****     TIM1_PWM_Init();       // Настраивает TIM1 для ШИМ на PA8 и PA9
+  45              		.loc 1 16 5 view .LVU3
+  46 000a FFF7FEFF 		bl	TIM1_PWM_Init
+  47              	.LVL2:
+  17:Core/Src/main.c ****     
+  18:Core/Src/main.c ****     // Теперь можно использовать функции установки коэф�
+  19:Core/Src/main.c ****     Set_PWM_PA8_DutyCycle(75);    // Установить 0% на PA8
+  48              		.loc 1 19 5 view .LVU4
+  49 000e 4B20     		movs	r0, #75
+  50 0010 FFF7FEFF 		bl	Set_PWM_PA8_DutyCycle
+  51              	.LVL3:
+  20:Core/Src/main.c ****     Set_PWM_PA9_DutyCycle(75);    // Установить 0% на PA9
+  52              		.loc 1 20 5 view .LVU5
+  53 0014 4B20     		movs	r0, #75
+  54 0016 FFF7FEFF 		bl	Set_PWM_PA9_DutyCycle
+  55              	.LVL4:
+  56              	.L2:
+  21:Core/Src/main.c ****     while(1)
+  57              		.loc 1 21 5 view .LVU6
+  22:Core/Src/main.c ****     {
+  23:Core/Src/main.c ****         pwm_state_pa8 = (READ_BIT(GPIOA->IDR, GPIO_IDR_ID8) != 0) ? 1 : 0;
+  58              		.loc 1 23 9 view .LVU7
+  59              		.loc 1 23 26 is_stmt 0 view .LVU8
+  60 001a 064A     		ldr	r2, .L4
+  61 001c 1369     		ldr	r3, [r2, #16]
+  62              		.loc 1 23 71 view .LVU9
+  63 001e C3F30023 		ubfx	r3, r3, #8, #1
+  64              		.loc 1 23 23 view .LVU10
+  65 0022 0549     		ldr	r1, .L4+4
+  66 0024 0B70     		strb	r3, [r1]
+  24:Core/Src/main.c ****         pwm_state_pa9 = (READ_BIT(GPIOA->IDR, GPIO_IDR_ID9) != 0) ? 1 : 0;
+  67              		.loc 1 24 9 is_stmt 1 discriminator 1 view .LVU11
+  68              		.loc 1 24 26 is_stmt 0 discriminator 1 view .LVU12
+  69 0026 1369     		ldr	r3, [r2, #16]
+  70              		.loc 1 24 71 discriminator 1 view .LVU13
+  71 0028 C3F34023 		ubfx	r3, r3, #9, #1
+  72              		.loc 1 24 23 discriminator 1 view .LVU14
+  73 002c 034A     		ldr	r2, .L4+8
+  74 002e 1370     		strb	r3, [r2]
+  21:Core/Src/main.c ****     while(1)
+  75              		.loc 1 21 10 is_stmt 1 view .LVU15
+  76 0030 F3E7     		b	.L2
+  77              	.L5:
+  78 0032 00BF     		.align	2
+  79              	.L4:
+  80 0034 00000240 		.word	1073872896
+  81 0038 00000000 		.word	pwm_state_pa8
+  82 003c 00000000 		.word	pwm_state_pa9
+  83              		.cfi_endproc
+  84              	.LFE130:
+  86              		.global	pwm_state_pa9
+  87              		.section	.bss.pwm_state_pa9,"aw",%nobits
+  90              	pwm_state_pa9:
+  91 0000 00       		.space	1
+  92              		.global	pwm_state_pa8
+  93              		.section	.bss.pwm_state_pa8,"aw",%nobits
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s 			page 3
+
+
+  96              	pwm_state_pa8:
+  97 0000 00       		.space	1
+  98              		.text
+  99              	.Letext0:
+ 100              		.file 2 "C:/Private/Study/DMPT/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/mach
+ 101              		.file 3 "C:/Private/Study/DMPT/Tools/xpack-arm-none-eabi-gcc-13.2.1-1.1/arm-none-eabi/include/sys/
+ 102              		.file 4 "Core/Inc/..\\..\\CMSIS\\Devices\\STM32F4xx\\Inc\\STM32F411xE\\stm32f411xe.h"
+ 103              		.file 5 "Core/Inc/init.h"
+ARM GAS  C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s 			page 4
 
 
 DEFINED SYMBOLS
                             *ABS*:00000000 main.c
-C:\Users\parni\AppData\Local\Temp\ccyGICRR.s:21     .text.main:00000000 $t
-C:\Users\parni\AppData\Local\Temp\ccyGICRR.s:27     .text.main:00000000 main
+C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s:21     .text.main:00000000 $t
+C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s:27     .text.main:00000000 main
+C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s:80     .text.main:00000034 $d
+C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s:96     .bss.pwm_state_pa8:00000000 pwm_state_pa8
+C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s:90     .bss.pwm_state_pa9:00000000 pwm_state_pa9
+C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s:91     .bss.pwm_state_pa9:00000000 $d
+C:\Users\lenovo\AppData\Local\Temp\ccSuFFVv.s:97     .bss.pwm_state_pa8:00000000 $d
 
-NO UNDEFINED SYMBOLS
+UNDEFINED SYMBOLS
+RCC_Init
+SysTick_Init
+TIM1_PWM_Init
+Set_PWM_PA8_DutyCycle
+Set_PWM_PA9_DutyCycle

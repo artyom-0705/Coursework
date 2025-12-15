@@ -10,21 +10,25 @@ void SysTick_Init(void)
     SET_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk);                                      // Включим счетчик
 }
 
-void ITR_Init(void)
-{
-    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); //Включение тактирования периферии SYSCFG 
 
-    MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI12_Msk, 
-    SYSCFG_EXTICR4_EXTI12_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC13 
 
-    // настройка EXTI регистров
-    SET_BIT(EXTI->IMR, EXTI_IMR_MR12); //Настройка маскирования 13 линии 
-    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR12); //Настройка детектирования нарастающего фронта 13 линии 
-    SET_BIT(EXTI->FTSR, EXTI_FTSR_TR12); //Настройка детектирования спадающего фронта 13 линии 
-    NVIC_SetPriority(EXTI15_10_IRQn, 
-    NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0)); //Установка 0 приоритета прерывания для вектора EXTI15_10 
-    NVIC_EnableIRQ(EXTI15_10_IRQn); //Включение прерывания по вектору EXTI15_10 
-}
+// void ITR_Init(void)
+// {
+//     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); //Включение тактирования периферии SYSCFG 
+
+//     MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI12_Msk, 
+//     SYSCFG_EXTICR4_EXTI12_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC13 
+
+//     // настройка EXTI регистров
+//     SET_BIT(EXTI->IMR, EXTI_IMR_MR12); //Настройка маскирования 13 линии 
+//     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR12); //Настройка детектирования нарастающего фронта 13 линии 
+//     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR12); //Настройка детектирования спадающего фронта 13 линии 
+//     NVIC_SetPriority(EXTI15_10_IRQn, 
+//     NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0)); //Установка 0 приоритета прерывания для вектора EXTI15_10 
+//     NVIC_EnableIRQ(EXTI15_10_IRQn); //Включение прерывания по вектору EXTI15_10 
+// }
+
+
 
 void RCC_Init(void)
 {
@@ -66,4 +70,83 @@ void RCC_Init(void)
     SET_BIT(RCC->CR, RCC_CR_PLLON);
     while (READ_BIT(RCC->CR, RCC_CR_PLLRDY) == RESET);
 
+}
+
+
+// ШИМ ЧАСТОТОЙ 50ГЦ
+void TIM1_PWM_Init(void)
+{
+    // Включение тактирования периферии
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOAEN);   // Включаем тактирование порта A (шина AHB1)
+    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_TIM1EN);    // Включаем тактирование TIM1 (шина APB2)
+
+    // Настройка выводов GPIO для PA8 и PA9
+    // Настраиваем PA8 и PA9 на альтернативную функцию (режим 10)
+    MODIFY_REG(GPIOA->MODER,
+               GPIO_MODER_MODE8 | GPIO_MODER_MODE9,
+               GPIO_MODER_MODE8_1 | GPIO_MODER_MODE9_1);
+
+    // Назначаем альтернативную функцию 1 (TIM1) для PA8 и PA9
+    MODIFY_REG(GPIOA->AFR[1],
+               GPIO_AFRH_AFSEL8 | GPIO_AFRH_AFSEL9,
+               1UL << GPIO_AFRH_AFSEL8_Pos | 1UL << GPIO_AFRH_AFSEL9_Pos);
+
+    // Настройка таймера
+    CLEAR_BIT(TIM1->CR1, TIM_CR1_CEN);            // Останавливаем таймер перед настройкой
+
+    // Настройка частоты ШИМ: 96 МГц / (PSC+1) / (ARR+1) = 96 МГц / 6 / 1000 = 16 кГц
+    MODIFY_REG(TIM1->PSC, TIM_PSC_PSC_Msk, 5UL);  // Предделитель = 6 (PSC = 5)
+    MODIFY_REG(TIM1->ARR, TIM_ARR_ARR_Msk, 999UL);// Период = 1000 (ARR = 999) → частота 16 кГц
+
+    SET_BIT(TIM1->CR1, TIM_CR1_ARPE);             // Включаем буферизацию регистра ARR (preload)
+
+    // Настройка режима ШИМ для каналов 1 и 2
+    // Канал 1 (PA8): ШИМ режим 1 (110) + буферизация CCR1
+    MODIFY_REG(TIM1->CCMR1,
+               TIM_CCMR1_OC1M_Msk | TIM_CCMR1_OC1PE_Msk,
+               (6UL << TIM_CCMR1_OC1M_Pos) | TIM_CCMR1_OC1PE);
+
+    // Канал 2 (PA9): ШИМ режим 1 (110) + буферизация CCR2
+    MODIFY_REG(TIM1->CCMR1,
+               TIM_CCMR1_OC2M_Msk | TIM_CCMR1_OC2PE_Msk,
+               (6UL << TIM_CCMR1_OC2M_Pos) | TIM_CCMR1_OC2PE);
+
+    // Включение выходов для каналов 1 и 2
+    SET_BIT(TIM1->BDTR, TIM_BDTR_MOE);            // Включаем главный выход (обязательно для TIM1)
+    
+    // Включаем каналы 1 и 2 ШИМ
+    SET_BIT(TIM1->CCER, TIM_CCER_CC1E | TIM_CCER_CC2E);
+
+    // Установка начальной коэффициента заполнения (0%) только для каналов 1 и 2
+    MODIFY_REG(TIM1->CCR1, TIM_CCR1_CCR1_Msk, 0UL);  // Двигатель 1 (PA8): CCR1 = 0 (0%)
+    MODIFY_REG(TIM1->CCR2, TIM_CCR2_CCR2_Msk, 0UL);  // Двигатель 2 (PA9): CCR2 = 0 (0%)
+
+    // Активация настроек и запуск таймера
+    SET_BIT(TIM1->EGR, TIM_EGR_UG);               // Генерируем update event (загружаем PSC и ARR)
+    SET_BIT(TIM1->CR1, TIM_CR1_CEN);              // Запускаем таймер
+}
+
+
+
+void Set_PWM_PA8_DutyCycle(uint8_t percent)
+{
+    if (percent > 100)                                      // Ограничение максимального значения
+    {
+        percent = 100;
+    }
+    
+    uint32_t ccr1_value = (TIM1->ARR * percent) / 100;      // Перевод процентов в значение CCR1
+    MODIFY_REG(TIM1->CCR1, TIM_CCR1_CCR1_Msk, ccr1_value);  // Устанавливаем новое значение в регистр CCR1
+}
+
+
+void Set_PWM_PA9_DutyCycle(uint8_t percent)
+{
+    if (percent > 100)                                      // Ограничение максимального значения
+    {
+        percent = 100;
+    }
+    
+    uint32_t ccr2_value = (TIM1->ARR * percent) / 100;      // Перевод процентов в значение CCR2
+    MODIFY_REG(TIM1->CCR2, TIM_CCR2_CCR2_Msk, ccr2_value);  // Устанавливаем новое значение в регистр CCR2
 }
