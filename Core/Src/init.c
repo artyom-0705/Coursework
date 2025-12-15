@@ -1,4 +1,4 @@
-#include ".\Core\Inc\init.h"
+#include "..\Inc\init.h"
 
 void SysTick_Init(void)
 {
