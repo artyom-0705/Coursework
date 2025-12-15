@@ -1,0 +1,55 @@
+ARM GAS  C:\Users\parni\AppData\Local\Temp\ccMFVtJd.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"it_handlers.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.file 1 "Core/Src/it_handlers.c"
+  20              		.section	.text.SysTick_Handler,"ax",%progbits
+  21              		.align	1
+  22              		.global	SysTick_Handler
+  23              		.syntax unified
+  24              		.thumb
+  25              		.thumb_func
+  27              	SysTick_Handler:
+  28              	.LFB130:
+   1:Core/Src/it_handlers.c **** #include "..\Inc\init.h"
+   2:Core/Src/it_handlers.c **** 
+   3:Core/Src/it_handlers.c **** void SysTick_Handler(void)
+   4:Core/Src/it_handlers.c **** {
+  29              		.loc 1 4 1 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+   5:Core/Src/it_handlers.c **** }...
+  34              		.loc 1 5 1 view .LVU1
+  35 0000 7047     		bx	lr
+  36              		.cfi_endproc
+  37              	.LFE130:
+  39              		.text
+  40              	.Letext0:
+ARM GAS  C:\Users\parni\AppData\Local\Temp\ccMFVtJd.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:00000000 it_handlers.c
+C:\Users\parni\AppData\Local\Temp\ccMFVtJd.s:21     .text.SysTick_Handler:00000000 $t
+C:\Users\parni\AppData\Local\Temp\ccMFVtJd.s:27     .text.SysTick_Handler:00000000 SysTick_Handler
+
+NO UNDEFINED SYMBOLS
