@@ -12,21 +12,51 @@ void SysTick_Init(void)
 
 
 
-// void ITR_Init(void)
-// {
-//     SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); //Включение тактирования периферии SYSCFG 
+void ITR_Init(void)
+{
+    SET_BIT(RCC->APB2ENR, RCC_APB2ENR_SYSCFGEN); //Включение тактирования периферии SYSCFG 
 
-//     MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI12_Msk, 
-//     SYSCFG_EXTICR4_EXTI12_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC13 
+    // Настройка прерываний на PC12 (правый энкодер)
+    MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI12_Msk, 
+    SYSCFG_EXTICR4_EXTI12_PC); //Настройка мультиплексора на вывод линии прерывания EXTI12 на PC12 
 
-//     // настройка EXTI регистров
-//     SET_BIT(EXTI->IMR, EXTI_IMR_MR12); //Настройка маскирования 13 линии 
-//     SET_BIT(EXTI->RTSR, EXTI_RTSR_TR12); //Настройка детектирования нарастающего фронта 13 линии 
-//     SET_BIT(EXTI->FTSR, EXTI_FTSR_TR12); //Настройка детектирования спадающего фронта 13 линии 
-//     NVIC_SetPriority(EXTI15_10_IRQn, 
-//     NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0)); //Установка 0 приоритета прерывания для вектора EXTI15_10 
-//     NVIC_EnableIRQ(EXTI15_10_IRQn); //Включение прерывания по вектору EXTI15_10 
-// }
+    // настройка EXTI регистров
+    SET_BIT(EXTI->IMR, EXTI_IMR_MR12); //Настройка маскирования 12 линии 
+    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR12); //Настройка детектирования нарастающего фронта 12 линии 
+    //SET_BIT(EXTI->FTSR, EXTI_FTSR_TR12); //Настройка детектирования спадающего фронта 12 линии 
+    NVIC_SetPriority(EXTI15_10_IRQn, 
+    NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0)); //Установка 0 приоритета прерывания для вектора EXTI15_10 
+    NVIC_EnableIRQ(EXTI15_10_IRQn); //Включение прерывания по вектору EXTI15_10
+    
+    //==================================================================================================
+
+    // Настройка прерываний на PC8 (левый энкодер)
+    MODIFY_REG(SYSCFG->EXTICR[2], SYSCFG_EXTICR3_EXTI8_Msk, 
+    SYSCFG_EXTICR3_EXTI8_PC); //Настройка мультиплексора на вывод линии прерывания EXTI8 на PC8 
+
+    // настройка EXTI регистров
+    SET_BIT(EXTI->IMR, EXTI_IMR_MR8); //Настройка маскирования 8 линии 
+    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR8); //Настройка детектирования нарастающего фронта 8 линии 
+    //SET_BIT(EXTI->FTSR, EXTI_FTSR_TR12); //Настройка детектирования спадающего фронта 8 линии 
+    NVIC_SetPriority(EXTI9_5_IRQn, 
+    NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0)); //Установка 0 приоритета прерывания для вектора EXTI9_5 
+    NVIC_EnableIRQ(EXTI9_5_IRQn); //Включение прерывания по вектору EXTI15_10
+
+    //==================================================================================================
+
+    // Настройка прерываний на PC13 (кнопка)
+    MODIFY_REG(SYSCFG->EXTICR[3], SYSCFG_EXTICR4_EXTI13_Msk, 
+    SYSCFG_EXTICR4_EXTI13_PC); //Настройка мультиплексора на вывод линии прерывания EXTI13 на PC13 
+
+    // настройка EXTI регистров
+    SET_BIT(EXTI->IMR, EXTI_IMR_MR13); //Настройка маскирования 13 линии 
+    SET_BIT(EXTI->RTSR, EXTI_RTSR_TR13); //Настройка детектирования нарастающего фронта 13 линии 
+    //SET_BIT(EXTI->FTSR, EXTI_FTSR_TR13); //Настройка детектирования спадающего фронта 13 линии 
+    NVIC_SetPriority(EXTI15_10_IRQn, 
+    NVIC_EncodePriority(NVIC_GetPriorityGrouping(), 0, 0)); //Установка 0 приоритета прерывания для вектора EXTI15_10 
+    NVIC_EnableIRQ(EXTI15_10_IRQn); //Включение прерывания по вектору EXTI15_10
+    
+}
 
 
 

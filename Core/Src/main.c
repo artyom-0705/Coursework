@@ -3,9 +3,20 @@
 
 uint8_t pwm_state_pa8 = 0;
 uint8_t pwm_state_pa9 = 0;
+uint16_t left_encoder_ticks = 0;
+uint16_t right_encoder_ticks = 0;
+uint32_t left_delay_counter = 0;
+uint32_t right_delay_counter = 0;
 
-void main(void)
+uint16_t button_delay_counter = 0;
+bool status_button = 0;
+
+int main(void)
 {
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN | RCC_AHB1ENR_GPIOCEN);
+    SET_BIT(GPIOC->PUPDR, GPIO_PUPDR_PUPDR12_0);
+    // Инициализируем прерывания
+    ITR_Init();
     // Инициализируем тактирование системы (RCC)
     RCC_Init();            // Настраивает тактовую частоту 96 МГц
     
