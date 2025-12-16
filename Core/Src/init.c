@@ -1,5 +1,34 @@
 #include "..\Inc\init.h"
 
+void GPIO_Init_Ports(void)
+{
+    SET_BIT(RCC->AHB1ENR, RCC_AHB1ENR_GPIOBEN);             // Включение тактирования GPIOB
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE10_0);             // Настройка пина PB10 на выход, регистр GPIOx_MODER
+    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_10);            // Установление PB10 в режим pull-push, регистр OTYPER
+    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR10_0);     // Устанавливаем скорость бита PB10 (средняя), регистр OSPEEDR
+    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD10_0);           // Отключаем подтягивающий резистор PB10, регистр PUPDR
+    SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR10);                   // Установление на пине PB10 0, регистр GPIOx_BSRR
+
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE4_0);              // Настройка пина PB4 на выход, регистр GPIOx_MODER
+    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_4);             // Установление PB4 в режим pull-push, регистр OTYPER
+    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR4_0);      // Устанавливаем скорость бита PB4 (средняя), регистр OSPEEDR
+    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD4_0);            // Отключаем подтягивающий резистор PB4, регистр PUPDR
+    SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR4);                    // Установление на пине PB4 0, регистр GPIOx_BSRR
+        
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE5_0);             // Настройка пина PB10 на выход, регистр GPIOx_MODER
+    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_5);            // Установление PB10 в режим pull-push, регистр OTYPER
+    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR5_0);     // Устанавливаем скорость бита PB10 (средняя), регистр OSPEEDR
+    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD5_0);           // Отключаем подтягивающий резистор PB10, регистр PUPDR
+    SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR5);                   // Установление на пине PB10 0, регистр GPIOx_BSRR
+
+    SET_BIT(GPIOB->MODER, GPIO_MODER_MODE3_0);              // Настройка пина PB4 на выход, регистр GPIOx_MODER
+    CLEAR_BIT(GPIOB->OTYPER, GPIO_OTYPER_OT_3);             // Установление PB4 в режим pull-push, регистр OTYPER
+    SET_BIT(GPIOB->OSPEEDR, GPIO_OSPEEDER_OSPEEDR3_0);      // Устанавливаем скорость бита PB4 (средняя), регистр OSPEEDR
+    CLEAR_BIT(GPIOB->PUPDR, GPIO_PUPDR_PUPD3_0);            // Отключаем подтягивающий резистор PB4, регистр PUPDR
+    SET_BIT(GPIOB->BSRR, GPIO_BSRR_BR3);                    // Установление на пине PB4 0, регистр GPIOx_BSRR
+}
+
+
 void SysTick_Init(void)
 {
     CLEAR_BIT(SysTick->CTRL, SysTick_CTRL_ENABLE_Msk); // выключим счетчик
@@ -158,25 +187,3 @@ void TIM1_PWM_Init(void)
 
 
 
-void Set_PWM_PA8_DutyCycle(uint8_t percent)
-{
-    if (percent > 100)                                      // Ограничение максимального значения
-    {
-        percent = 100;
-    }
-    
-    uint32_t ccr1_value = (TIM1->ARR * percent) / 100;      // Перевод процентов в значение CCR1
-    MODIFY_REG(TIM1->CCR1, TIM_CCR1_CCR1_Msk, ccr1_value);  // Устанавливаем новое значение в регистр CCR1
-}
-
-
-void Set_PWM_PA9_DutyCycle(uint8_t percent)
-{
-    if (percent > 100)                                      // Ограничение максимального значения
-    {
-        percent = 100;
-    }
-    
-    uint32_t ccr2_value = (TIM1->ARR * percent) / 100;      // Перевод процентов в значение CCR2
-    MODIFY_REG(TIM1->CCR2, TIM_CCR2_CCR2_Msk, ccr2_value);  // Устанавливаем новое значение в регистр CCR2
-}

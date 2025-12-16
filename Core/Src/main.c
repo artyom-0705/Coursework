@@ -1,5 +1,6 @@
 
 #include "init.h"  // Подключаем заголовочный файл с объявлениями функций
+#include "utils.h"
 
 uint8_t pwm_state_pa8 = 0;
 uint8_t pwm_state_pa9 = 0;

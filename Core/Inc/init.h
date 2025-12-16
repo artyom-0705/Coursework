@@ -9,5 +9,3 @@ void ITR_Init(void);
 void SysTick_Init(void);
 void RCC_Init(void);
 void TIM1_PWM_Init(void);
-void Set_PWM_PA8_DutyCycle(uint8_t percent);
-void Set_PWM_PA9_DutyCycle(uint8_t percent);
